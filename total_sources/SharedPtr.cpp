@@ -19,7 +19,7 @@ public:
 	explicit SharedPtr(T* ptr, const Deleter& deleter = Deleter{}) noexcept
 		: ptr_(ptr) {
 		if (ptr) {
-			control_block = new ControlBlock<T, Deleter>(ptr, deleter);
+			control_block_ = new ControlBlock<T, Deleter>(ptr, deleter);
 		}
 		else {
 			control_block_ = nullptr;
@@ -47,7 +47,7 @@ public:
 			reset();
 			ptr_ = other.ptr_;
 			control_block_ = other.control_block_;
-			if (control_bolck_) {
+			if (control_block_) {
 				++(control_block_->strong_count); // 增加引用计数
 			}
 		}
@@ -86,7 +86,7 @@ public:
 
 	//获取强引用计数
 	size_t use_count() const noexcept {
-		return control_count_ ? control_block_->strong_count.load() : 0;
+		return control_block_ ? control_block_->strong_count.load() : 0;
 	}
 
 	//重置指针
@@ -99,7 +99,7 @@ public:
 				}
 				ptr_ = nullptr;
 				//检查弱引用是否为0，销毁控制块
-				if (--(control_block_->weak_count) == 0) {//这有一点问题，weak_count应该在WeakPtr析构时减少，而不是在SharedPtr中减少
+				if (--(control_block_->weak_count) == 0) {
 					delete control_block_;
 				}
 			}

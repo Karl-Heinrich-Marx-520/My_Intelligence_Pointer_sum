@@ -90,31 +90,29 @@ public:
 	}
 
 	//重置指针
-	void reset(T* ptr = nullptr, const Deleter& deleter = Deleter{}) noexcept {
-		//1.处理旧资源：减少强引用计数，必要时销毁对象
-		if (control_block_) {
-			if (--(control_block_->strong_count) == 0) {
-				if (ptr_) {
-					control_block_->deleter(ptr_);
-				}
-				ptr_ = nullptr;
-				//检查弱引用是否为0，销毁控制块
-				if (--(control_block_->weak_count) == 0) {
-					delete control_block_;
-				}
-			}
-			control_block_ = nullptr;
-		}
+void reset(T* ptr = nullptr, const Deleter& deleter = Deleter{}) noexcept {
+	//1.处理旧资源：减少强引用计数，必要时销毁对象
+	if (control_block_) {
+		if (--(control_block_->strong_count) == 0) {
+			control_block_->deleter(ptr_); //调用删除器销毁对象
+			ptr_ = nullptr; //置空裸指针
 
-		//2.设置新资源
-		ptr_ = ptr;
-		if (ptr) {
-			control_block_ = new ControlBlock<T, Deleter>(ptr, deleter);
+			if (control_block_->weak_count == 0) {
+				delete control_block_;
+			}
 		}
-		else {
-			control_block_ = nullptr;
-		}
+		control_block_ = nullptr;
 	}
+
+	//2.设置新资源
+	ptr_ = ptr;
+	if (ptr) {
+		control_block_ = new ControlBlock<T, Deleter>(ptr, deleter);
+	}
+	else {
+		control_block_ = nullptr;
+	}
+}
 
 	explicit operator bool() const noexcept {
 		return ptr_ != nullptr;

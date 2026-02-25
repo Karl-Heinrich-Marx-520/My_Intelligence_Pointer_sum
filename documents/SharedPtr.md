@@ -149,23 +149,6 @@ private:
     ControlBlock<T, Deleter>* control_block_ = nullptr;
 
 public:
-    explicit SharedPtr(T* ptr) noexcept 
-        : ptr_(ptr) {
-        if (ptr) {
-            control_block_ = new ControlBlock<T, Deleter>(ptr, Deleter{});
-        }
-    }
-
-    size_t use_count() const noexcept {
-        return control_block_ ? control_block_->strong_count.load() : 0;
-    }
-
-    T* get() const noexcept { return ptr_; }
-
-    explicit operator bool() const noexcept { return ptr_ != nullptr; }
-
-    T& operator*() const noexcept { return *ptr_; }
-
     void reset(T* ptr = nullptr, const Deleter& deleter = Deleter{}) noexcept {
         // 1.处理旧资源：减少强引用计数，必要时销毁控制块（由控制块析构释放对象）
         if (control_block_) {
@@ -185,12 +168,6 @@ public:
             control_block_ = new ControlBlock<T, Deleter>(ptr, deleter);
         } else {
             control_block_ = nullptr;
-        }
-    }
-
-    ~SharedPtr() noexcept {
-        if (control_block_) {
-            reset();
         }
     }
 };

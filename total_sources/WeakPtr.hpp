@@ -1,5 +1,4 @@
-#include "headfiles.h"
-#include "SharedPtr.cpp"
+#include "SharedPtr.hpp"
 
 template <typename T, typename Deleter = default_delete<T>>
 class WeakPtr {
@@ -18,7 +17,7 @@ public:
 	//从SharedPtr构造
 	WeakPtr(const SharedPtr<T, Deleter>& shared_ptr) noexcept
 		: ptr_(shared_ptr.ptr_), control_block_(shared_ptr.control_block_) {
-		if(control_block_) {
+		if (control_block_) {
 			++(control_block_->weak_count); //增加弱引用计数
 		}
 	}
@@ -52,7 +51,7 @@ public:
 	}
 
 	//移动赋值
-	WeakPtr& operator=(WeakPtr && other) noexcept{
+	WeakPtr& operator=(WeakPtr&& other) noexcept {
 		if (this != &other) {
 			reset();
 			ptr_ = other.ptr_;

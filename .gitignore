@@ -1,0 +1,47 @@
+# ===================== CMake 生成文件 =====================
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# ===================== 编译产物 =====================
+# 目标文件/库文件
+*.o
+*.a
+*.so
+*.dll
+*.exe
+*.out
+*.lib
+*.dylib
+# 可执行文件（替换为你的项目名）
+YourProjectName
+
+# ===================== 临时/系统文件 =====================
+*.swp
+*.swo
+*~
+.DS_Store       # MacOS
+Thumbs.db       # Windows
+*.tmp
+
+# ===================== 构建目录 =====================
+build/          # 推荐的out-of-source构建目录
+out/
+bin/
+lib/
+build-*/        # 自定义构建目录（如build-linux/build-win）
+
+# ===================== IDE/编辑器配置 =====================
+.idea/          # CLion/IntelliJ
+.vscode/        # VSCode
+*.suo           # Visual Studio
+*.user          # Visual Studio
+*.sln.docstates
+.project        # Eclipse
+.cproject       # Eclipse
